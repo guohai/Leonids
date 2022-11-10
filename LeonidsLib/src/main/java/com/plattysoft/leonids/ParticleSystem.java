@@ -720,6 +720,10 @@ public class ParticleSystem {
 		mEmittingTime = mCurrentTime;
 	}
 
+	public void resumeEmitting() {
+		mEmittingTime = -1;
+	}
+
 	/**
 	 * Cancels the particle system and all the animations.
 	 * To stop emitting but animate until the end, use stopEmitting instead.
