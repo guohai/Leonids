@@ -138,6 +138,47 @@ public class ParticleSystem {
 		}
 	}
 
+    /**
+     * Creates a particle system with the given parameters
+     *
+     * @param parentView   The parent view group
+     * @param drawable[]   The drawables to use as particles
+     * @param maxParticles The maximum number of particles
+     * @param timeToLive   The time to live for the particles
+     */
+	public ParticleSystem(ViewGroup parentView, int maxParticles, Drawable[] drawables, long timeToLive) {
+		this(parentView, maxParticles, timeToLive);
+
+		if (drawables == null || drawables.length == 0) {
+			throw new RuntimeException("drawables empty");
+		}
+
+		for (int i = 0; i < mMaxParticles; i++) {
+			int randomDrawable = Math.round(((float) Math.random()) * (drawables.length - 1));
+			Drawable drawable = drawables[randomDrawable];
+
+			Particle particle;
+			if (drawable instanceof AnimationDrawable) {
+				AnimationDrawable animation = (AnimationDrawable) drawable;
+				particle = new AnimatedParticle(animation);
+			} else {
+				Bitmap bitmap = null;
+				if (drawable instanceof BitmapDrawable) {
+					bitmap = ((BitmapDrawable) drawable).getBitmap();
+				} else {
+					bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(),
+							drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+					Canvas canvas = new Canvas(bitmap);
+					drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+					drawable.draw(canvas);
+				}
+				particle = new Particle(bitmap);
+			}
+
+			mParticles.add(particle);
+		}
+	 }
+
 	/**
 	 * Creates a particle system with the given parameters
 	 *
